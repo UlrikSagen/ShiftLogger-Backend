@@ -3,6 +3,7 @@ package timetracker.db;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import timetracker.dto.*;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -15,8 +16,8 @@ public class TimeEntryRepository {
 
     private final JdbcTemplate jdbc;
     
-    private static final RowMapper<TimeEntryRow> ROW_MAPPER =
-        (rs, rowNum) -> new TimeEntryRow(
+    private static final RowMapper<TimeEntryDto> ROW_MAPPER =
+        (rs, rowNum) -> new TimeEntryDto(
             rs.getObject("id", UUID.class),
             rs.getObject("user_id", UUID.class),
             rs.getObject("entry_date", LocalDate.class),
@@ -60,14 +61,14 @@ public class TimeEntryRepository {
         return new TimeEntryRow(id, userId, date, start, end, lastEdited, createdAt);
     }
 
-    public List<TimeEntryRow> findByUserId(UUID userId){
+    public List<TimeEntryDto> findByUserId(UUID userId){
         return jdbc.query("SELECT id, user_id, entry_date, start_time, end_time, created_at, last_edit FROM time_entries WHERE user_id = ?",
             ROW_MAPPER,
             userId
             );     
     }
 
-    public List<TimeEntryRow> findByUserIdAndRange(UUID userId, LocalDate from, LocalDate to){
+    public List<TimeEntryDto> findByUserIdAndRange(UUID userId, LocalDate from, LocalDate to){
         return jdbc.query("SELECT id, user_id, entry_date, start_time, end_time, created_at, last_edit FROM time_entries WHERE user_id = ? AND entry_date >= ? AND entry_date < ?",
             ROW_MAPPER,
             userId, from, to

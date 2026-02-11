@@ -2,6 +2,7 @@ package timetracker.api;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,7 @@ public class TimeEntryController {
         }
     }
     @PutMapping("/update")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public TimeEntryDto update(@RequestBody UpdateTimeEntryRequest req, @AuthenticationPrincipal UserPrincipal me) {
         if (me == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         try {
@@ -65,17 +66,35 @@ public class TimeEntryController {
         }
     }
     @DeleteMapping("/delete")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public boolean update(@RequestBody DeleteTimeEntryRequest req, @AuthenticationPrincipal UserPrincipal me){
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@RequestBody DeleteTimeEntryRequest req, @AuthenticationPrincipal UserPrincipal me){
         if (me == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         try{
             boolean deleted = service.delete(me.userId(), req.id());
-
-            return deleted;
+            if(!deleted){
+               throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Kunne ikke slette TimeEntry med id: " + req.id());
+            }
         } catch(IllegalArgumentException e){
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
+
+    @GetMapping("/getrange")
+    @ResponseStatus(HttpStatus.OK)
+    public List<TimeEntryDto> getRange(@RequestBody GetRangeRequest req, @AuthenticationPrincipal UserPrincipal me){
+        if (me == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        try{
+            return service.getByIdAndRange(me.userId(), req.from(), req.to());
+        } catch(IllegalArgumentException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
+    public record GetRangeRequest(
+        LocalDate from,
+        LocalDate to)
+    {}
+
     public record DeleteTimeEntryRequest(
         UUID id)
     {}

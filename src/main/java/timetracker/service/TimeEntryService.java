@@ -3,8 +3,11 @@ package timetracker.service;
 import org.springframework.stereotype.Service;
 import timetracker.db.TimeEntryRepository;
 
+import timetracker.dto.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -45,5 +48,9 @@ public class TimeEntryService {
 
     public boolean delete(UUID userId, UUID id){
         return repo.delete(userId, id);
+    }
+
+    public List<TimeEntryDto> getByIdAndRange(UUID userId, LocalDate from, LocalDate to){
+        return repo.findByUserIdAndRange(userId, from, to);
     }
 }
