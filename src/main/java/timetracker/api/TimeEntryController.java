@@ -81,10 +81,10 @@ public class TimeEntryController {
 
     @GetMapping("/getrange")
     @ResponseStatus(HttpStatus.OK)
-    public List<TimeEntryDto> getRange(@RequestBody GetRangeRequest req, @AuthenticationPrincipal UserPrincipal me){
+    public List<TimeEntryDto> getRange(@RequestParam LocalDate from, @RequestParam LocalDate to, @AuthenticationPrincipal UserPrincipal me){
         if (me == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         try{
-            return service.getByIdAndRange(me.userId(), req.from(), req.to());
+            return service.getByIdAndRange(me.userId(), from, to);
         } catch(IllegalArgumentException e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

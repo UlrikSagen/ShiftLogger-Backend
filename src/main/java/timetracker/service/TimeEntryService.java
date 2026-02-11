@@ -51,6 +51,9 @@ public class TimeEntryService {
     }
 
     public List<TimeEntryDto> getByIdAndRange(UUID userId, LocalDate from, LocalDate to){
+        if (from.isAfter(to)){
+            throw new IllegalArgumentException("From må være før to");
+        }
         return repo.findByUserIdAndRange(userId, from, to);
     }
 }
