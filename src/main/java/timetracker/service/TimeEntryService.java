@@ -46,14 +46,18 @@ public class TimeEntryService {
         return repo.update(id, userId, date, start, end);
     }
 
-    public boolean delete(UUID userId, UUID id){
-        return repo.delete(userId, id);
+    public boolean delete(UUID id, UUID userId){
+        return repo.delete(id, userId);
     }
 
-    public List<TimeEntryDto> getByIdAndRange(UUID userId, LocalDate from, LocalDate to){
+    public List<TimeEntryDto> getByUserIdAndRange(UUID userId, LocalDate from, LocalDate to){
         if (from.isAfter(to)){
             throw new IllegalArgumentException("From-dato må være før eller lik to-dato");
         }
         return repo.findByUserIdAndRange(userId, from, to);
+    }
+
+    public List<TimeEntryDto> getByUserId(UUID userId){
+        return repo.findByUserId(userId);
     }
 }

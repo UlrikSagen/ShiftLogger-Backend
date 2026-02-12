@@ -28,7 +28,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring("Bearer ".length());
 
-            // JwtService skal verifisere signatur, utløp, etc.
             var claims = jwt.verify(token);
 
             UUID userId = UUID.fromString(claims.userId());
