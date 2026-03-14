@@ -28,9 +28,6 @@ public class AuthController {
         this.jwt = jwt;
     }
 
-    /* =========================
-       REGISTER
-       ========================= */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public RegisterResponse register(@RequestBody RegisterRequest req) {
@@ -58,9 +55,6 @@ public class AuthController {
         }
     }
 
-    /* =========================
-       LOGIN
-       ========================= */
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest req) {
 
