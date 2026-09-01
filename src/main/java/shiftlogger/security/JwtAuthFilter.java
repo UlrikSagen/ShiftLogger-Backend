@@ -26,16 +26,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String header = req.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring("Bearer ".length());
+            try{
+                String token = header.substring("Bearer ".length());
 
-            var claims = jwt.verify(token);
+                var claims = jwt.verify(token);
 
-            UUID userId = UUID.fromString(claims.userId());
-            String username = claims.username();
+                UUID userId = UUID.fromString(claims.userId());
+                String username = claims.username();
 
-            var principal = new UserPrincipal(userId, username);
-            var auth = new UsernamePasswordAuthenticationToken(principal, null, List.of());
-            SecurityContextHolder.getContext().setAuthentication(auth);
+                var principal = new UserPrincipal(userId, username);
+                var auth = new UsernamePasswordAuthenticationToken(principal, null, List.of());
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            } catch(IllegalArgumentException e){
+                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token");
+                return;
+            }
         }
 
         chain.doFilter(req, res);
