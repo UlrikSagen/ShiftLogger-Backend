@@ -9,15 +9,20 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
+
 @Service
 public class JwtService {
 
-    private static final String SECRET = System.getenv("JWT_SECRET");
-
     private static final long EXPIRATION_SECONDS = 60 * 60 * 24; // 24h
+    private final SecretKey key;
 
-    private final SecretKey key =
-            Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    public JwtService(@Value("${JWT_SECRET}") String secret){
+        if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length < 32){
+            throw new IllegalStateException("jwt.secret must be at least 32 bytes");
+        }
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
 
     public String createToken(String userId, String username) {
         Instant now = Instant.now();
