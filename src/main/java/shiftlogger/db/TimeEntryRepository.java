@@ -40,7 +40,7 @@ public class TimeEntryRepository {
         OffsetDateTime lastEdited = jdbc.queryForObject("SELECT last_edit FROM time_entries WHERE id = ?",
         OffsetDateTime.class, id);
 
-        return new TimeEntryRow(id, userId, date, start, end, lastEdited, createdAt);
+        return new TimeEntryRow(id, userId, date, start, end, createdAt, lastEdited);
     }
 
     public boolean delete(UUID id, UUID userId){
@@ -59,7 +59,7 @@ public class TimeEntryRepository {
         OffsetDateTime lastEdited = jdbc.queryForObject("SELECT last_edit FROM time_entries WHERE id = ?",
          OffsetDateTime.class, id);
 
-        return new TimeEntryRow(id, userId, date, start, end, lastEdited, createdAt);
+        return new TimeEntryRow(id, userId, date, start, end, createdAt, lastEdited);
     }
 
     public List<TimeEntryDto> findByUserId(UUID userId){
