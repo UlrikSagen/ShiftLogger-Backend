@@ -8,16 +8,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 public class SecurityConfig {
-
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, JwtService jwt) throws Exception {
-        return http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/health", "/auth/register", "/auth/login", "/error").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(new JwtAuthFilter(jwt), UsernamePasswordAuthenticationFilter.class)
-                .build();
+        return http.csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth
+                -> auth.requestMatchers("/health", "/auth/register", "/auth/login", "/error", "/ready")
+                       .permitAll()
+                       .anyRequest()
+                       .authenticated())
+            .addFilterBefore(new JwtAuthFilter(jwt), UsernamePasswordAuthenticationFilter.class)
+            .build();
     }
 }
