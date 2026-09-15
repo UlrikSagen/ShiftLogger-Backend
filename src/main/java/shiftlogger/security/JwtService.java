@@ -17,7 +17,7 @@ public class JwtService {
     private static final long EXPIRATION_SECONDS = 60 * 60 * 24; // 24h
     private final SecretKey key;
 
-    public JwtService(@Value("${JWT_SECRET}") String secret){
+    public JwtService(@Value("${jwt.secret}") String secret){
         if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length < 32){
             throw new IllegalStateException("jwt.secret must be at least 32 bytes");
         }
