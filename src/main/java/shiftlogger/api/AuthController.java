@@ -1,5 +1,6 @@
 package shiftlogger.api;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -43,14 +44,11 @@ public class AuthController {
         UUID userId = UUID.randomUUID();
         try {
             users.insert(userId, req.username(), hash);
-            System.out.println("HEI fra register. alt OK!");
             return new RegisterResponse(userId, req.username());
-        } catch (Exception e) {
-            System.out.println("hei fra register. feilet." + e.getMessage());
+        } catch (DuplicateKeyException e) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "username already exists",
-                    e
+                    "username already exists"
             );
         }
     }
