@@ -6,11 +6,13 @@ import org.junit.jupiter.api.Test;
 
 import shiftlogger.db.TimeEntryRepository;
 import shiftlogger.db.TimeEntryRepository.TimeEntryRow;
+import shiftlogger.exception.TimeEntryNotFoundException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -116,7 +118,7 @@ class TimeEntryServiceTest {
         UUID id = UUID.randomUUID();
         TimeEntryRow row = new TimeEntryRow(id, userId, today, EIGHT, SIXTEEN,
                 OffsetDateTime.now(), OffsetDateTime.now());
-        when(repo.update(id, userId, today, EIGHT, SIXTEEN)).thenReturn(row);
+        when(repo.update(id, userId, today, EIGHT, SIXTEEN)).thenReturn(Optional.of(row));
 
         assertThat(service.update(userId, id, today, EIGHT, SIXTEEN)).isEqualTo(row);
     }
@@ -133,6 +135,15 @@ class TimeEntryServiceTest {
         assertThatThrownBy(() -> service.update(userId, UUID.randomUUID(), today.plusDays(1), EIGHT, SIXTEEN))
                 .isInstanceOf(IllegalArgumentException.class);
         verifyNoInteractions(repo);
+    }
+
+    @Test
+    void update_unknownId_throwsNotFound() {
+        UUID id = UUID.randomUUID();
+        when(repo.update(id, userId, today, EIGHT, SIXTEEN)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.update(userId, id, today, EIGHT, SIXTEEN))
+                .isInstanceOf(TimeEntryNotFoundException.class);
     }
 
     // ---------- delete ----------

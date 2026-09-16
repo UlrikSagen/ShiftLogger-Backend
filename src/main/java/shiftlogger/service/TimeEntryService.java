@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import shiftlogger.db.TimeEntryRepository;
 import shiftlogger.dto.*;
+import shiftlogger.exception.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -43,7 +44,8 @@ public class TimeEntryService {
         if (!start.isBefore(end)) {
             throw new IllegalArgumentException("start må være før end");
         }
-        return repo.update(id, userId, date, start, end);
+        return repo.update(id, userId, date, start, end)
+            .orElseThrow(() -> new TimeEntryNotFoundException(id));
     }
 
     public boolean delete(UUID id, UUID userId){
