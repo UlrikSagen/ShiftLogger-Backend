@@ -39,7 +39,9 @@ public class AuthController {
         if (req.password() == null || req.password().length() < 8) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "password must be at least 8 chars");
         }
-
+        if (req.username().length() > 20){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is too long");
+        } 
         String hash = passwordEncoder.encode(req.password());
         UUID userId = UUID.randomUUID();
         try {

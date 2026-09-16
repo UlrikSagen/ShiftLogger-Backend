@@ -39,7 +39,7 @@ public class ReadyController{
 			return Map.of("ready", true, "db", "ok");
 		} catch (Exception e){
 			log.error("DB not ready", e);
-			throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "DB not ready: " + e.getMessage(), e);
+			throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "DB not ready", e);
 		}
 	}
 }
