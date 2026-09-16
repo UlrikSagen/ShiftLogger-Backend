@@ -11,6 +11,8 @@ import java.time.OffsetDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.Optional;
+
 
 @Repository
 public class TimeEntryRepository {
@@ -48,18 +50,18 @@ public class TimeEntryRepository {
         return deleted > 0;
     }
 
-    public TimeEntryRow update(UUID id, UUID userId, LocalDate date, LocalTime start, LocalTime end){
+    public Optional<TimeEntryRow> update(UUID id, UUID userId, LocalDate date, LocalTime start, LocalTime end){
         int updated = jdbc.update("UPDATE time_entries SET entry_date = ?, start_time = ?, end_time = ?, last_edit = now() WHERE id = ? AND user_id = ?",
             date, start, end, id, userId);
         if (updated == 0){
-            throw new IllegalStateException("Fant ingen time_entry med id " + id);
+            return Optional.empty();
         }
         OffsetDateTime createdAt = jdbc.queryForObject("SELECT created_at FROM time_entries WHERE id = ?",
          OffsetDateTime.class, id);
         OffsetDateTime lastEdited = jdbc.queryForObject("SELECT last_edit FROM time_entries WHERE id = ?",
          OffsetDateTime.class, id);
 
-        return new TimeEntryRow(id, userId, date, start, end, createdAt, lastEdited);
+        return Optional.of(new TimeEntryRow(id, userId, date, start, end, createdAt, lastEdited));
     }
 
     public List<TimeEntryDto> findByUserId(UUID userId){
