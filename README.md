@@ -55,9 +55,13 @@ mvn spring-boot:run
 ```
 
 ## Tester
-
+### Enhet og integrasjonstester er skrevet med hjelp av Claude code
 - **Enhetstester** for tokenhåndtering (inkludert avvisning av manipulerte og utløpte tokens) og forretningsregler
-- **Integrasjonstester** med Testcontainers: ekte HTTP-kall mot ekte Postgres, fra registrering og innlogging til CRUD, og verifisering av at brukere ikke kan endre hverandres data
+- **Integrasjonstester** med Testcontainers: HTTP-kall mot Postgres, fra registrering og innlogging til CRUD, og verifisering av at brukere ikke kan endre hverandres data
+
+## Kjente svakheter
+- Det er ingen limit på hvem eller hvor mange brukere som kan opprettes.
+- 
 
 ## TODO
 
@@ -65,4 +69,4 @@ mvn spring-boot:run
 - [ ] Databasemigrasjoner med Flyway
 - [ ] Refresh tokens og token-revokering
 - [ ] Rollebasert autorisasjon
-- [ ] Web-klient
+- [ ] Web-klient(?)
