@@ -1,4 +1,4 @@
-# shiftlogger-api
+# shiftlogger-backend
 
 REST-API for registrering av arbeidstimer, bygget med sikkerhet som utgangspunkt og i drift 24/7 på egen server.
 
